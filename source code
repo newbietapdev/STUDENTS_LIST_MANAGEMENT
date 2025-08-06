@@ -1,0 +1,177 @@
+//Code edit by Langtuhacking
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+struct SinhVien{
+	char name[100];
+	char mail[100];
+	char lop[100];
+	double gpa;
+};
+typedef struct SinhVien SinhVien;
+void nhap(SinhVien *x){
+	printf("Nhap ten sinh vien : ");
+	gets(x->name);
+	printf("Nhap mail sinh vien : ");
+	gets(x->mail);
+	printf("Nhap lop sinh vien : ");
+	gets(x->lop);
+	printf("Nhap diem sinh vien : ");
+	scanf("%lf",&x->gpa);
+	printf("\n");
+}
+void in(SinhVien x){
+	printf("Ten sinh vien : %s\n", x.name);
+	printf("Mail sinh vien : %s\n", x.mail);
+	printf("Lop sinh vien : %s\n", x.lop);
+	printf("GPA cua sinh vien : %.2lf", x.gpa);
+	printf("\n\n");
+}
+void timSV(SinhVien x[], int n, char name[]){
+	int pos = -1;
+	for(int i = 0; i < n; i++){
+		if(strcmp(x[i].name, name) == 0){
+			printf("Da tim thay thong tin sinh vien ban vua nhap\n");
+			in(x[i]);
+			pos = i;
+			break;
+		}
+	}
+	if(pos == -1){
+		printf("Khong tim thay sinh vien!\n");
+	}
+}
+void gpaMax(SinhVien x[], int n){
+	double max_gpa = -1e9;
+	for(int i = 0; i < n; i++){
+		max_gpa = fmax(max_gpa, x[i].gpa);
+	}
+	for(int i = 0; i < n; i++){
+		if(x[i].gpa == max_gpa){
+			in(x[i]);
+		}
+	}
+}
+//neu khong dung insertSort se su dung qsort
+int comp(const void *a, const void *b){
+	SinhVien *x = (SinhVien*)a;
+	SinhVien *y = (SinhVien*)b;
+	//vi la so thuc cho nen ta phai return thu cong
+	if(y->gpa > x->gpa){
+		return 1;
+	}
+	else{
+		return -1;
+	}
+}
+void xoaSV(SinhVien x[], int *n, char name[]){
+	//Vong lap xoa hang loat cac sinh vien co ten ban vua nhap
+	int cnt = -1;
+	for(int i = 0; i < *n; i++){
+		if(strcmp(name, x[i].name) == 0){ 
+			for(int j = i; j < *n-1; j++){ //dich toan bo mang ve truoc khi da tim thay
+				x[i] = x[i+1];
+				cnt = 1;
+			}
+			--i;//giam i di 1 don vi de vong lap tiep tuc check lai vi tri nay co thoa man dieu kien tren khong!
+			(*n)--; //truy cap vao dia chi cua n va giam di 1 don vi
+		}
+		
+	}	
+	if(cnt){
+		printf("Da xoa thong tin sinh vien thanh cong!\n", cnt);
+	}
+	else if(cnt == -1){
+		printf("Khong tim thay ten sinh vien ban can xoa!\n");
+	}
+}
+void sx_gpa(SinhVien x[], int n){
+	//su dung insertionSort
+	for(int i = 1; i < n; i++){
+		int pos = i-1;
+		double gpa = x[i].gpa;
+		SinhVien tmp = x[i];
+		while(pos >= 0 && gpa > x[pos].gpa){
+			x[pos + 1] = x[pos];
+			--pos;
+		}
+		++pos;
+		x[pos] = tmp;
+	}
+}
+SinhVien a[1000];
+int idx = 0;
+int main(){
+	printf("Hello World!\n");
+	while(1){
+		printf("\n--------------------QLSV--------------------\n");
+		printf("1. Nhap danh sach sinh vien!\n");
+		printf("2. Hien thi danh sach sinh vien!\n");
+		printf("3. Tim kiem sinh vien theo ten\n");
+		printf("4. Liet ke sinh vien co diem cao nhat!\n");
+		printf("5. Xoa sinh vien theo ten!\n");
+		printf("6. Danh sach sinh vien theo GPA giam dan!\n");
+		printf("0. Thoat chuong trinh!\n");
+		printf("--------------------------------------------\n\n");
+		printf("Moi ban nhap : ");
+		int pr;
+		scanf("%d", &pr);
+		getchar();//loai bo ki enter khoi bo nho dem
+		if(pr == 1){
+			int res = 0;
+			printf("Vui long nhap so luong sinh vien : ");
+			scanf("%d", &idx);
+			if(idx > 0){
+				getchar();
+				for(int i = 0; i < idx; i++){
+					if(i != 0){
+						res = 1;
+					}
+					nhap(&a[i]);
+					getchar();
+				}
+				printf("Nhap du lieu thanh cong vao he thong!\n\n");
+			}
+			else{
+				printf("Nhap du lieu that bai, vui long nhan phim 1 va nhap lai!\n\n");
+			}
+					
+		}
+		if(pr == 2){
+			printf("Duoi day la danh sach thong tin sinh vien :\n");
+			for(int i = 0; i < idx; i++){
+				printf("Thong tin sinh vien thu %d:\n", i+1);
+				in(a[i]);
+			}
+		}
+		if(pr == 3){
+			printf("Nhap ten sinh vien can tim : ");
+			char name[1001];
+			gets(name);
+			timSV(a, idx, name);
+		}
+		if(pr == 4){
+			printf("Duoi day la thong tin nhung sinh vien co diem GPA cao nhat\n");
+			gpaMax(a, idx);
+		}
+		if(pr == 5){
+			printf("Nhap ten sinh vien can xoa : ");
+			char name[1001];
+			gets(name);
+			xoaSV(a, &idx, name);
+		}
+		if(pr == 6){
+			qsort(a, idx, sizeof(SinhVien), comp);
+			printf("Duoi day la danh sach sinh vien theo thu tu GPA giam dan : \n");
+			for(int i = 0; i < idx; i++){
+				in(a[i]);
+			}
+		}
+		if(pr == 0){
+			printf("Code By Langtuhacking");
+			break;
+		}
+	}
+	return 0;
+}
