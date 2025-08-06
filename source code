@@ -1,4 +1,4 @@
-//Code edit by Langtuhacking
+//Code edit by newbieTapDev
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -169,7 +169,7 @@ int main(){
 			}
 		}
 		if(pr == 0){
-			printf("Code By Langtuhacking");
+			printf("Code By newbieTapDev");
 			break;
 		}
 	}
